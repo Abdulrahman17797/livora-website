@@ -32,6 +32,25 @@ export default function OrderPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (totalBottles === 0) return;
+
+    const lines: string[] = ["🛒 *New Livora Order*", ""];
+
+    Object.entries(selection).forEach(([id, qty]) => {
+      const f = flavours.find((fl) => fl.id === id)!;
+      lines.push(`• ${f.name} × ${qty}`);
+    });
+
+    lines.push("");
+    lines.push(`*Total:* ${totalBottles} bottle${totalBottles !== 1 ? "s" : ""}`);
+    lines.push("");
+    lines.push(`*Name:* ${form.name}`);
+    lines.push(`*Phone:* ${form.phone}`);
+    lines.push(`*Address:* ${form.address}`);
+    if (form.notes) lines.push(`*Notes:* ${form.notes}`);
+
+    const message = encodeURIComponent(lines.join("\n"));
+    window.open(`https://wa.me/97338388211?text=${message}`, "_blank");
+
     setSubmitted(true);
   };
 
