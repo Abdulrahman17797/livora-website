@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Recurse -Exclude node_modules,.next | Where-Object { -not $_.FullName.Contains\\(\"node_modules\"\\) -and -not $_.FullName.Contains\\(\".next\"\\) } | Select-Object -ExpandProperty FullName | ForEach-Object { $_.Replace\\(\"C:\\\\Users\\\\Abdulrahman\\\\livora-website\\\\\", \"\"\\) } | Sort-Object)",
+      "PowerShell(npm run *)",
+      "PowerShell(git *)"
+    ]
+  }
+}
