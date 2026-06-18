@@ -58,7 +58,7 @@ export default function ProductsPage() {
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.55, delay: i * 0.1, ease: "easeOut" }}
+            transition={{ duration: 0.55, delay: i * 0.1, ease: "easeOut" as const }}
             className="bg-white border border-gray-100 rounded-3xl overflow-hidden hover:shadow-xl hover:shadow-[#E8A0BF]/15 transition-all duration-300 hover:-translate-y-1"
           >
             {/* Photo */}
