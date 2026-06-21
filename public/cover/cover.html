@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <title>Livora Cover</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 1080px;
+      height: 1350px;
+      overflow: hidden;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .card {
+      width: 1080px;
+      height: 1350px;
+      background: linear-gradient(150deg, #9B5DE5 0%, #C49CF0 48%, #E8A0BF 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .orb-1 {
+      top: -180px; right: -180px;
+      width: 500px; height: 500px;
+      background: rgba(255,255,255,0.08);
+    }
+    .orb-2 {
+      bottom: -140px; left: -140px;
+      width: 420px; height: 420px;
+      background: rgba(255,255,255,0.06);
+    }
+
+    /* Logo — mix-blend-mode removes white background on gradient */
+    .logo {
+      margin-top: 70px;
+      height: 132px;
+      width: auto;
+      display: block;
+      mix-blend-mode: multiply;
+    }
+
+    .tagline-en {
+      margin-top: 20px;
+      font-size: 30px;
+      font-weight: 600;
+      color: #ffffff;
+      letter-spacing: 0.025em;
+      text-align: center;
+    }
+
+    .tagline-ar {
+      margin-top: 7px;
+      font-size: 24px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.82);
+      direction: rtl;
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .divider {
+      margin-top: 26px;
+      width: 48px;
+      height: 2px;
+      background: rgba(255,255,255,0.38);
+      border-radius: 2px;
+    }
+
+    /* Bottles row */
+    .bottles {
+      margin-top: 22px;
+      display: flex;
+      gap: 16px;
+      width: 960px;
+    }
+
+    .bottle-card {
+      flex: 1;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.24);
+      border-radius: 24px;
+      padding: 18px 12px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /*
+      Fixed pixel height on the frame is what makes object-fit: contain work.
+      Without it, height: 100% on the img has nothing to resolve against.
+    */
+    .bottle-frame {
+      width: 100%;
+      height: 500px;
+    }
+
+    .bottle-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .bottle-name {
+      margin-top: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.9);
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+
+    .domain {
+      margin-top: auto;
+      margin-bottom: 52px;
+      font-size: 20px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.78);
+      letter-spacing: 0.16em;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <img class="logo" src="livoralogo.jpeg" alt="Livora" />
+
+    <p class="tagline-en">The Healthy Kombucha</p>
+    <p class="tagline-ar">مشروب الكمبوتشا الصحي</p>
+
+    <div class="divider"></div>
+
+    <div class="bottles">
+      <div class="bottle-card">
+        <div class="bottle-frame">
+          <img src="orange-ginger.jpeg" alt="Orange Ginger" />
+        </div>
+        <span class="bottle-name">Orange Ginger</span>
+      </div>
+      <div class="bottle-card">
+        <div class="bottle-frame">
+          <img src="ginger-lime.png.jpeg" alt="Ginger Lime" />
+        </div>
+        <span class="bottle-name">Ginger Lime</span>
+      </div>
+      <div class="bottle-card">
+        <div class="bottle-frame">
+          <img src="berry.hebiscus.jpeg.jpeg" alt="Berry Hibiscus" />
+        </div>
+        <span class="bottle-name">Berry Hibiscus</span>
+      </div>
+    </div>
+
+    <p class="domain">drinklivora.com</p>
+  </div>
+</body>
+</html>
