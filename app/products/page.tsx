@@ -5,24 +5,21 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 
 const BREW_NOTE =
-  "1 Liter | Handcrafted in Bahrain. No preservatives. No shortcuts. Raw. Alive. Delicious. Freshly brewed to order — please allow 5–7 days for preparation before delivery.";
+  "Available in 500ml & 1 Litre | Handcrafted in Bahrain. No preservatives. No shortcuts. Raw. Alive. Delicious. Freshly brewed to order — please allow 5–7 days for preparation before delivery.";
 
 const products = [
   {
     name: "Orange Ginger Kombucha",
-    price: "BHD 7.000",
     tagline: "Sun-ripened orange and fresh ginger. Vibrant and gut-loving.",
     image: "/orange-ginger.jpeg",
   },
   {
     name: "Ginger Lime Kombucha",
-    price: "BHD 7.000",
     tagline: "Zesty lime meets warming ginger. Spicy-citrus balance.",
     image: "/ginger-lime.png.jpeg",
   },
   {
     name: "Berry Hibiscus Kombucha",
-    price: "BHD 7.000",
     tagline: "Bold mixed berries and hibiscus. Rich and tangy.",
     image: "/berry.hebiscus.jpeg.jpeg",
   },
@@ -52,7 +49,7 @@ export default function ProductsPage() {
 
       {/* 3-card grid */}
       <div className="grid md:grid-cols-3 gap-8">
-        {products.map(({ name, price, tagline, image }, i) => (
+        {products.map(({ name, tagline, image }, i) => (
           <motion.article
             key={name}
             initial={{ opacity: 0, y: 24 }}
@@ -77,12 +74,21 @@ export default function ProductsPage() {
 
             {/* Content */}
             <div className="p-6">
-              <div className="flex items-start justify-between gap-2 mb-3">
-                <h2 className="text-base font-semibold leading-snug">{name}</h2>
-                <span className="text-sm font-semibold text-[#9B5DE5] whitespace-nowrap">
-                  {price}
+              <h2 className="text-base font-semibold leading-snug mb-2">{name}</h2>
+
+              {/* Sizes + prices */}
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-xs text-gray-500">
+                  500ml —{" "}
+                  <span className="text-[#9B5DE5] font-semibold">BHD 3.500</span>
+                </span>
+                <span className="text-gray-200">|</span>
+                <span className="text-xs text-gray-500">
+                  1 Litre —{" "}
+                  <span className="text-[#9B5DE5] font-semibold">BHD 5.000</span>
                 </span>
               </div>
+
               <p className="text-sm text-gray-500 font-light leading-relaxed">
                 {tagline}
               </p>

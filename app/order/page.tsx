@@ -4,22 +4,37 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
+const SIZES = [
+  { label: "500ml", price: "3.500" },
+  { label: "1 Litre", price: "5.000" },
+] as const;
+
+type SizeLabel = typeof SIZES[number]["label"];
+type Selection = Record<string, number>;
+type SizeChoice = Record<string, SizeLabel>;
+
 const flavours = [
-  { id: "orange-ginger", name: "Orange Ginger Kombucha", image: "/orange-ginger.jpeg", price: "BHD 7.000" },
-  { id: "ginger-lime", name: "Ginger Lime Kombucha", image: "/ginger-lime.png.jpeg", price: "BHD 7.000" },
-  { id: "berry-hibiscus", name: "Berry Hibiscus Kombucha", image: "/berry.hebiscus.jpeg.jpeg", price: "BHD 7.000" },
+  { id: "orange-ginger", name: "Orange Ginger Kombucha", image: "/orange-ginger.jpeg" },
+  { id: "ginger-lime", name: "Ginger Lime Kombucha", image: "/ginger-lime.png.jpeg" },
+  { id: "berry-hibiscus", name: "Berry Hibiscus Kombucha", image: "/berry.hebiscus.jpeg.jpeg" },
 ];
 
-type Selection = Record<string, number>;
-
-const initialSelection: Selection = {};
+const defaultSizeChoice: SizeChoice = Object.fromEntries(
+  flavours.map((f) => [f.id, "500ml" as SizeLabel])
+);
 
 export default function OrderPage() {
-  const [selection, setSelection] = useState<Selection>(initialSelection);
+  const [selection, setSelection] = useState<Selection>({});
+  const [sizeChoice, setSizeChoice] = useState<SizeChoice>(defaultSizeChoice);
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({ name: "", phone: "", address: "", notes: "" });
 
   const totalBottles = Object.values(selection).reduce((a, b) => a + b, 0);
+
+  const totalPrice = Object.entries(selection).reduce((sum, [id, qty]) => {
+    const size = SIZES.find((s) => s.label === (sizeChoice[id] ?? "500ml"))!;
+    return sum + parseFloat(size.price) * qty;
+  }, 0);
 
   const adjust = (id: string, delta: number) => {
     setSelection((prev) => {
@@ -37,11 +52,14 @@ export default function OrderPage() {
 
     Object.entries(selection).forEach(([id, qty]) => {
       const f = flavours.find((fl) => fl.id === id)!;
-      lines.push(`• ${f.name} × ${qty}`);
+      const size = SIZES.find((s) => s.label === (sizeChoice[id] ?? "500ml"))!;
+      lines.push(`• ${f.name} — ${size.label} — ${size.price} BHD × ${qty}`);
     });
 
     lines.push("");
-    lines.push(`*Total:* ${totalBottles} bottle${totalBottles !== 1 ? "s" : ""}`);
+    lines.push(
+      `*Total:* ${totalBottles} bottle${totalBottles !== 1 ? "s" : ""} — BHD ${totalPrice.toFixed(3)}`
+    );
     lines.push("");
     lines.push(`*Name:* ${form.name}`);
     lines.push(`*Phone:* ${form.phone}`);
@@ -74,12 +92,15 @@ export default function OrderPage() {
             to confirm your order and arrange delivery.
           </p>
           <p className="mt-3 text-sm text-gray-400">
-            {totalBottles} bottle{totalBottles !== 1 ? "s" : ""} freshly brewed to order — please allow 5–7 days for preparation.
+            {totalBottles} bottle{totalBottles !== 1 ? "s" : ""} — BHD{" "}
+            {totalPrice.toFixed(3)} — freshly brewed to order. Please allow 5–7
+            days for preparation.
           </p>
           <button
             onClick={() => {
               setSubmitted(false);
-              setSelection(initialSelection);
+              setSelection({});
+              setSizeChoice(defaultSizeChoice);
               setForm({ name: "", phone: "", address: "", notes: "" });
             }}
             className="mt-8 gradient-bg text-white font-semibold px-8 py-4 rounded-full hover:opacity-90 transition-opacity"
@@ -132,8 +153,9 @@ export default function OrderPage() {
           </div>
 
           <div className="flex flex-col gap-4">
-            {flavours.map(({ id, name, image, price }) => {
+            {flavours.map(({ id, name, image }) => {
               const qty = selection[id] ?? 0;
+              const selectedSize = sizeChoice[id] ?? "500ml";
               return (
                 <div
                   key={id}
@@ -156,7 +178,25 @@ export default function OrderPage() {
                     </div>
                     <div>
                       <span className="font-medium text-sm block">{name}</span>
-                      <span className="text-xs text-[#9B5DE5] font-medium">{price}</span>
+                      {/* Size toggle */}
+                      <div className="flex gap-1.5 mt-1.5">
+                        {SIZES.map((s) => (
+                          <button
+                            key={s.label}
+                            type="button"
+                            onClick={() =>
+                              setSizeChoice((prev) => ({ ...prev, [id]: s.label }))
+                            }
+                            className={`text-xs px-2.5 py-1 rounded-full font-medium transition-all ${
+                              selectedSize === s.label
+                                ? "gradient-bg text-white"
+                                : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                            }`}
+                          >
+                            {s.label} — BHD {s.price}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -253,17 +293,26 @@ export default function OrderPage() {
             <ul className="space-y-1.5">
               {Object.entries(selection).map(([id, qty]) => {
                 const f = flavours.find((fl) => fl.id === id)!;
+                const size = SIZES.find(
+                  (s) => s.label === (sizeChoice[id] ?? "500ml")
+                )!;
+                const lineTotal = (parseFloat(size.price) * qty).toFixed(3);
                 return (
                   <li key={id} className="flex justify-between text-sm">
-                    <span>{f.name}</span>
-                    <span className="font-medium">× {qty}</span>
+                    <span>
+                      {f.name}{" "}
+                      <span className="text-gray-400">({size.label})</span>
+                    </span>
+                    <span className="font-medium">
+                      × {qty} — BHD {lineTotal}
+                    </span>
                   </li>
                 );
               })}
             </ul>
             <div className="border-t border-[#E8A0BF]/30 mt-4 pt-4 flex justify-between text-sm font-semibold">
-              <span>Total bottles</span>
-              <span className="gradient-text">{totalBottles}</span>
+              <span>Total</span>
+              <span className="gradient-text">BHD {totalPrice.toFixed(3)}</span>
             </div>
             <p className="mt-3 text-xs text-gray-400 font-light">
               Freshly brewed to order — please allow 5–7 days for preparation before delivery.
@@ -278,7 +327,7 @@ export default function OrderPage() {
         >
           {totalBottles === 0
             ? "Select at least one bottle to continue"
-            : `Place Order — ${totalBottles} bottle${totalBottles !== 1 ? "s" : ""}`}
+            : `Place Order — BHD ${totalPrice.toFixed(3)}`}
         </button>
       </form>
     </div>
