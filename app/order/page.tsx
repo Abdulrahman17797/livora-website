@@ -5,8 +5,8 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 
 const SIZES = [
-  { label: "500ml", price: "3.500" },
-  { label: "1 Litre", price: "5.000" },
+  { label: "500ml", oldPrice: "5.000", price: "3.500" },
+  { label: "1 Litre", oldPrice: "7.000", price: "5.000" },
 ] as const;
 
 type SizeLabel = typeof SIZES[number]["label"];
@@ -193,7 +193,11 @@ export default function OrderPage() {
                                 : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                             }`}
                           >
-                            {s.label} — BHD {s.price}
+                            {s.label}{" "}
+                            <span className={`line-through ${selectedSize === s.label ? "opacity-60" : "opacity-50"}`}>
+                              {s.oldPrice}
+                            </span>{" "}
+                            {s.price} BHD
                           </button>
                         ))}
                       </div>

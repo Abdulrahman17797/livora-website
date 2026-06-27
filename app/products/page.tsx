@@ -80,11 +80,13 @@ export default function ProductsPage() {
               <div className="flex items-center gap-3 mb-3">
                 <span className="text-xs text-gray-500">
                   500ml —{" "}
+                  <span className="line-through text-gray-400 font-normal">BHD 5.000</span>{" "}
                   <span className="text-[#9B5DE5] font-semibold">BHD 3.500</span>
                 </span>
                 <span className="text-gray-200">|</span>
                 <span className="text-xs text-gray-500">
                   1 Litre —{" "}
+                  <span className="line-through text-gray-400 font-normal">BHD 7.000</span>{" "}
                   <span className="text-[#9B5DE5] font-semibold">BHD 5.000</span>
                 </span>
               </div>
