@@ -16,15 +16,20 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Server-side env check: inject RTL anti-flicker script only on non-production
+  // (production visitors are always English — no flash possible)
+  const arabicEnabled = process.env.VERCEL_ENV !== "production";
+
   return (
     <html lang="en">
       <head>
-        {/* Prevent RTL flash on reload when Arabic is stored */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `try{var l=localStorage.getItem('livora-lang');if(l==='ar'){document.documentElement.dir='rtl';document.documentElement.lang='ar';}}catch(e){}`,
-          }}
-        />
+        {arabicEnabled && (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `try{var l=localStorage.getItem('livora-lang');if(l==='ar'){document.documentElement.dir='rtl';document.documentElement.lang='ar';}}catch(e){}`,
+            }}
+          />
+        )}
       </head>
       <body className="antialiased bg-white text-[#1a1a1a]">
         <LanguageProvider>

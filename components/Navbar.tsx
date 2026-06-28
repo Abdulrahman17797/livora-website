@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 import { translations } from "@/lib/translations";
+import { ARABIC_ENABLED } from "@/lib/featureFlags";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -27,10 +28,8 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const LangToggle = ({ compact }: { compact?: boolean }) => (
-    <div
-      className={`flex items-center border border-gray-200 rounded-full overflow-hidden text-xs font-semibold ${compact ? "" : ""}`}
-    >
+  const LangToggle = () => (
+    <div className="flex items-center border border-gray-200 rounded-full overflow-hidden text-xs font-semibold">
       <button
         onClick={() => setLang("en")}
         className={`px-3 py-1.5 transition-all duration-200 ${
@@ -82,9 +81,9 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Desktop: lang toggle + CTA */}
+        {/* Desktop: lang toggle (preview/dev only) + CTA */}
         <div className="hidden md:flex items-center gap-3">
-          <LangToggle />
+          {ARABIC_ENABLED && <LangToggle />}
           <Link
             href="/order"
             className="gradient-bg text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:opacity-90 transition-opacity"
@@ -138,9 +137,12 @@ export default function Navbar() {
                   {tx.orderCta}
                 </Link>
               </li>
-              <li className="pt-1">
-                <LangToggle compact />
-              </li>
+              {/* Lang toggle only shown on preview/dev builds */}
+              {ARABIC_ENABLED && (
+                <li className="pt-1">
+                  <LangToggle />
+                </li>
+              )}
             </ul>
           </motion.div>
         )}
