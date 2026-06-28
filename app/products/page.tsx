@@ -3,29 +3,17 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-
-const BREW_NOTE =
-  "Available in 500ml & 1 Litre | Handcrafted in Bahrain. No preservatives. No shortcuts. Raw. Alive. Delicious. Freshly brewed to order — please allow 5–7 days for preparation before delivery.";
-
-const products = [
-  {
-    name: "Orange Ginger Kombucha",
-    tagline: "Sun-ripened orange and fresh ginger. Vibrant and gut-loving.",
-    image: "/orange-ginger.jpeg",
-  },
-  {
-    name: "Ginger Lime Kombucha",
-    tagline: "Zesty lime meets warming ginger. Spicy-citrus balance.",
-    image: "/ginger-lime.png.jpeg",
-  },
-  {
-    name: "Berry Hibiscus Kombucha",
-    tagline: "Bold mixed berries and hibiscus. Rich and tangy.",
-    image: "/berry.hebiscus.jpeg.jpeg",
-  },
-];
+import { useLanguage } from "@/context/LanguageContext";
+import { translations } from "@/lib/translations";
 
 export default function ProductsPage() {
+  const { lang } = useLanguage();
+  const tx = translations[lang];
+  const p = tx.products;
+
+  const [h1Before, h1Grad] = p.h1;
+  const [ctaBefore, ctaGrad] = p.ctaH2;
+
   return (
     <div className="pt-24 pb-32 px-6 max-w-6xl mx-auto">
 
@@ -37,21 +25,22 @@ export default function ProductsPage() {
         className="text-center mb-16 pt-12"
       >
         <p className="text-sm font-semibold tracking-widest uppercase text-[#9B5DE5] mb-4">
-          The Range
+          {p.badge}
         </p>
         <h1 className="text-5xl md:text-6xl font-bold leading-tight">
-          Our <span className="gradient-text">Kombucha</span>
+          {h1Before && <>{h1Before} </>}
+          <span className="gradient-text">{h1Grad}</span>
         </h1>
         <p className="mt-5 text-lg text-gray-500 font-light max-w-md mx-auto">
-          Three flavours. Freshly brewed to order in Bahrain. Nothing artificial.
+          {p.sub}
         </p>
       </motion.div>
 
       {/* 3-card grid */}
       <div className="grid md:grid-cols-3 gap-8">
-        {products.map(({ name, tagline, image }, i) => (
+        {tx.flavours.map(({ id, name, tagline, image }, i) => (
           <motion.article
-            key={name}
+            key={id}
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -79,13 +68,13 @@ export default function ProductsPage() {
               {/* Sizes + prices */}
               <div className="flex items-center gap-3 mb-3">
                 <span className="text-xs text-gray-500">
-                  500ml —{" "}
+                  {lang === "ar" ? "500 مل" : "500ml"} —{" "}
                   <span className="line-through text-gray-400 font-normal">BHD 5.000</span>{" "}
                   <span className="text-[#9B5DE5] font-semibold">BHD 3.500</span>
                 </span>
                 <span className="text-gray-200">|</span>
                 <span className="text-xs text-gray-500">
-                  1 Litre —{" "}
+                  {lang === "ar" ? "1 لتر" : "1 Litre"} —{" "}
                   <span className="line-through text-gray-400 font-normal">BHD 7.000</span>{" "}
                   <span className="text-[#9B5DE5] font-semibold">BHD 5.000</span>
                 </span>
@@ -95,13 +84,13 @@ export default function ProductsPage() {
                 {tagline}
               </p>
               <p className="text-xs text-gray-400 font-light mt-4 leading-relaxed border-t border-gray-100 pt-4">
-                {BREW_NOTE}
+                {p.brewNote}
               </p>
               <Link
                 href="/order"
                 className="mt-6 block text-center gradient-bg text-white text-sm font-semibold py-3 rounded-full hover:opacity-90 transition-opacity"
               >
-                Order Now
+                {p.orderNow}
               </Link>
             </div>
           </motion.article>
@@ -117,16 +106,15 @@ export default function ProductsPage() {
         className="mt-20 text-center bg-gradient-to-br from-[#F5D0E4]/30 to-[#C49CF0]/20 rounded-3xl p-12"
       >
         <h2 className="text-3xl font-bold">
-          Ready to <span className="gradient-text">taste the difference</span>?
+          {ctaBefore && <>{ctaBefore} </>}
+          <span className="gradient-text">{ctaGrad}</span>
         </h2>
-        <p className="text-gray-500 font-light mt-3 max-w-md mx-auto">
-          Place your order and we&apos;ll brew it fresh. Delivered within 5–7 days.
-        </p>
+        <p className="text-gray-500 font-light mt-3 max-w-md mx-auto">{p.ctaSub}</p>
         <Link
           href="/order"
           className="mt-8 inline-block gradient-bg text-white font-semibold px-10 py-4 rounded-full hover:opacity-90 transition-opacity"
         >
-          Place an Order
+          {p.ctaBtn}
         </Link>
       </motion.div>
     </div>

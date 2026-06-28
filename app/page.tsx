@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/context/LanguageContext";
+import { translations } from "@/lib/translations";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -13,13 +15,16 @@ const fadeUp = {
   }),
 };
 
-const products = [
-  { name: "Orange Ginger", note: "Vibrant and gut-loving", image: "/orange-ginger.jpeg" },
-  { name: "Ginger Lime", note: "Spicy-citrus balance", image: "/ginger-lime.png.jpeg" },
-  { name: "Berry Hibiscus", note: "Rich and tangy", image: "/berry.hebiscus.jpeg.jpeg" },
-];
-
 export default function Home() {
+  const { lang } = useLanguage();
+  const tx = translations[lang];
+  const h = tx.home;
+
+  const [heroBefore, heroGrad] = h.heroH1;
+  const [flavBefore, flavGrad] = h.flavoursH2;
+  const [brewBefore, brewGrad] = h.brewH2;
+  const [ctaBefore, ctaGrad] = h.ctaH2;
+
   return (
     <>
       {/* Hero */}
@@ -31,7 +36,7 @@ export default function Home() {
           variants={fadeUp}
           className="text-sm font-semibold tracking-widest uppercase text-[#9B5DE5] mb-4"
         >
-          Small-Batch Kombucha
+          {h.heroBadge}
         </motion.p>
         <motion.h1
           custom={1}
@@ -40,8 +45,8 @@ export default function Home() {
           variants={fadeUp}
           className="text-5xl md:text-7xl font-bold leading-tight max-w-3xl"
         >
-          Drink Your Way to{" "}
-          <span className="gradient-text">Feeling Alive</span>
+          {heroBefore && <>{heroBefore}{" "}</>}
+          <span className="gradient-text">{heroGrad}</span>
         </motion.h1>
         <motion.p
           custom={2}
@@ -50,8 +55,7 @@ export default function Home() {
           variants={fadeUp}
           className="mt-6 text-lg text-gray-500 max-w-xl font-light"
         >
-          Livora Kombucha is crafted with real ingredients, live cultures, and
-          the belief that what you drink should make you feel extraordinary.
+          {h.heroSub}
         </motion.p>
         <motion.div
           custom={3}
@@ -64,13 +68,13 @@ export default function Home() {
             href="/order"
             className="gradient-bg text-white font-semibold px-8 py-4 rounded-full hover:opacity-90 transition-opacity"
           >
-            Order Now
+            {h.heroPrimary}
           </Link>
           <Link
             href="/about"
             className="border border-gray-200 text-[#1a1a1a] font-semibold px-8 py-4 rounded-full hover:border-[#E8A0BF] transition-colors"
           >
-            Our Story
+            {h.heroSecondary}
           </Link>
         </motion.div>
 
@@ -82,7 +86,7 @@ export default function Home() {
           className="mt-16 inline-flex items-center gap-2 bg-[#F5D0E4]/40 rounded-full px-5 py-2.5 text-sm font-medium text-[#9B5DE5]"
         >
           <span className="w-2 h-2 rounded-full bg-[#9B5DE5] animate-pulse" />
-          Freshly brewed to order — 3 flavours available now
+          {h.liveBadge}
         </motion.div>
       </section>
 
@@ -96,17 +100,16 @@ export default function Home() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-bold">
-            Our <span className="gradient-text">Flavours</span>
+            {flavBefore && <>{flavBefore} </>}
+            <span className="gradient-text">{flavGrad}</span>
           </h2>
-          <p className="mt-3 text-gray-500 font-light">
-            Three kombucha brewed fresh to order in Bahrain.
-          </p>
+          <p className="mt-3 text-gray-500 font-light">{h.flavoursSub}</p>
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          {products.map(({ name, note, image }, i) => (
+          {tx.flavours.map(({ id, shortName, note, image }, i) => (
             <motion.div
-              key={name}
+              key={id}
               custom={i}
               initial="hidden"
               whileInView="visible"
@@ -114,12 +117,11 @@ export default function Home() {
               variants={fadeUp}
               className="group bg-white border border-gray-100 rounded-3xl overflow-hidden hover:shadow-xl hover:shadow-[#E8A0BF]/20 transition-all duration-300 hover:-translate-y-1"
             >
-              {/* Product photo */}
               <div className="px-4 pt-4">
                 <div className="rounded-2xl overflow-hidden">
                   <Image
                     src={image}
-                    alt={name}
+                    alt={shortName}
                     width={0}
                     height={0}
                     sizes="(max-width: 768px) 100vw, 33vw"
@@ -127,15 +129,14 @@ export default function Home() {
                   />
                 </div>
               </div>
-
               <div className="p-8">
-                <h3 className="text-xl font-semibold">{name}</h3>
+                <h3 className="text-xl font-semibold">{shortName}</h3>
                 <p className="mt-2 text-sm text-gray-400 font-light">{note}</p>
                 <Link
                   href="/products"
                   className="mt-6 inline-flex items-center gap-1 text-sm font-medium text-[#9B5DE5] group-hover:gap-2 transition-all"
                 >
-                  View details →
+                  {h.viewDetails}
                 </Link>
               </div>
             </motion.div>
@@ -152,8 +153,8 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-3xl md:text-4xl font-bold"
           >
-            Brewed with{" "}
-            <span className="gradient-text">Purpose</span>
+            {brewBefore && <>{brewBefore}{" "}</>}
+            <span className="gradient-text">{brewGrad}</span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 16 }}
@@ -162,9 +163,7 @@ export default function Home() {
             transition={{ delay: 0.1 }}
             className="mt-4 text-gray-600 font-light text-lg max-w-2xl mx-auto"
           >
-            We source organic teas, use raw cane sugar, and let time do its
-            work. No shortcuts. No artificial anything. Just pure, living
-            kombucha that your gut will thank you for.
+            {h.brewBody}
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -173,11 +172,7 @@ export default function Home() {
             transition={{ delay: 0.2 }}
             className="mt-12 grid grid-cols-3 gap-8 max-w-lg mx-auto"
           >
-            {[
-              { stat: "5–7", label: "Days brewed to order" },
-              { stat: "100%", label: "Organic tea" },
-              { stat: "0g", label: "Artificial sugar" },
-            ].map(({ stat, label }) => (
+            {h.stats.map(({ stat, label }) => (
               <div key={label} className="text-center">
                 <p className="text-3xl font-bold gradient-text">{stat}</p>
                 <p className="text-sm text-gray-500 mt-1 font-light">{label}</p>
@@ -197,17 +192,15 @@ export default function Home() {
           className="max-w-2xl mx-auto"
         >
           <h2 className="text-3xl md:text-4xl font-bold">
-            Ready to{" "}
-            <span className="gradient-text">feel the difference</span>?
+            {ctaBefore && <>{ctaBefore}{" "}</>}
+            <span className="gradient-text">{ctaGrad}</span>
           </h2>
-          <p className="mt-4 text-gray-500 font-light">
-            Order your kombucha and we&apos;ll brew it fresh for you.
-          </p>
+          <p className="mt-4 text-gray-500 font-light">{h.ctaSub}</p>
           <Link
             href="/order"
             className="mt-8 inline-block gradient-bg text-white font-semibold px-10 py-4 rounded-full hover:opacity-90 transition-opacity"
           >
-            Start Your Order
+            {h.ctaBtn}
           </Link>
         </motion.div>
       </section>

@@ -1,23 +1,38 @@
+"use client";
+
 import Link from "next/link";
+import { useLanguage } from "@/context/LanguageContext";
+import { translations } from "@/lib/translations";
 
 export default function Footer() {
+  const { lang } = useLanguage();
+  const tx = translations[lang];
+
+  const links = [
+    { href: "/", label: tx.nav.home },
+    { href: "/products", label: tx.nav.products },
+    { href: "/about", label: tx.nav.about },
+    { href: "/order", label: tx.nav.order },
+  ];
+
   return (
     <footer className="border-t border-gray-100 mt-24">
       <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col md:flex-row items-start justify-between gap-10">
         <div>
           <p className="font-bold text-lg gradient-text">Livora</p>
-          <p className="text-sm text-gray-500 mt-1">Live Better. Drink Better.</p>
+          <p className="text-sm text-gray-500 mt-1">{tx.footer.tagline}</p>
         </div>
 
         <nav className="flex gap-8 text-sm text-gray-500">
-          <Link href="/" className="hover:text-[#9B5DE5] transition-colors">Home</Link>
-          <Link href="/products" className="hover:text-[#9B5DE5] transition-colors">Products</Link>
-          <Link href="/about" className="hover:text-[#9B5DE5] transition-colors">About</Link>
-          <Link href="/order" className="hover:text-[#9B5DE5] transition-colors">Order</Link>
+          {links.map(({ href, label }) => (
+            <Link key={href} href={href} className="hover:text-[#9B5DE5] transition-colors">
+              {label}
+            </Link>
+          ))}
         </nav>
 
         <div>
-          <p className="text-sm font-semibold text-[#1a1a1a] mb-3">Get in Touch</p>
+          <p className="text-sm font-semibold text-[#1a1a1a] mb-3">{tx.footer.getInTouch}</p>
           <ul className="space-y-2">
             <li>
               <a
@@ -50,7 +65,9 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-gray-100">
-        <p className="text-xs text-gray-400 text-center py-5">© {new Date().getFullYear()} Livora Kombucha. All rights reserved.</p>
+        <p className="text-xs text-gray-400 text-center py-5">
+          © {new Date().getFullYear()} {tx.footer.copyright}
+        </p>
       </div>
     </footer>
   );

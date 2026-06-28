@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Analytics } from "@vercel/analytics/react";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 export const metadata: Metadata = {
   title: "Livora Kombucha — Live Better, Drink Better",
@@ -17,11 +18,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Prevent RTL flash on reload when Arabic is stored */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var l=localStorage.getItem('livora-lang');if(l==='ar'){document.documentElement.dir='rtl';document.documentElement.lang='ar';}}catch(e){}`,
+          }}
+        />
+      </head>
       <body className="antialiased bg-white text-[#1a1a1a]">
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
-        <Analytics />
+        <LanguageProvider>
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+          <Analytics />
+        </LanguageProvider>
       </body>
     </html>
   );

@@ -4,24 +4,51 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-
-const links = [
-  { href: "/", label: "Home" },
-  { href: "/products", label: "Products" },
-  { href: "/about", label: "About" },
-  { href: "/order", label: "Order" },
-];
+import { useLanguage } from "@/context/LanguageContext";
+import { translations } from "@/lib/translations";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { lang, setLang } = useLanguage();
+  const tx = translations[lang].nav;
+
+  const links = [
+    { href: "/", label: tx.home },
+    { href: "/products", label: tx.products },
+    { href: "/about", label: tx.about },
+    { href: "/order", label: tx.order },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const LangToggle = ({ compact }: { compact?: boolean }) => (
+    <div
+      className={`flex items-center border border-gray-200 rounded-full overflow-hidden text-xs font-semibold ${compact ? "" : ""}`}
+    >
+      <button
+        onClick={() => setLang("en")}
+        className={`px-3 py-1.5 transition-all duration-200 ${
+          lang === "en" ? "gradient-bg text-white" : "text-gray-400 hover:text-[#9B5DE5]"
+        }`}
+      >
+        EN
+      </button>
+      <button
+        onClick={() => setLang("ar")}
+        className={`px-3 py-1.5 transition-all duration-200 ${
+          lang === "ar" ? "gradient-bg text-white" : "text-gray-400 hover:text-[#9B5DE5]"
+        }`}
+      >
+        AR
+      </button>
+    </div>
+  );
 
   return (
     <header
@@ -46,7 +73,7 @@ export default function Navbar() {
               >
                 {label}
                 <span
-                  className={`absolute -bottom-0.5 left-0 h-0.5 rounded-full gradient-bg transition-all duration-300 ${
+                  className={`absolute -bottom-0.5 start-0 h-0.5 rounded-full gradient-bg transition-all duration-300 ${
                     pathname === href ? "w-full" : "w-0 group-hover:w-full"
                   }`}
                 />
@@ -55,12 +82,16 @@ export default function Navbar() {
           ))}
         </ul>
 
-        <Link
-          href="/order"
-          className="hidden md:block gradient-bg text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:opacity-90 transition-opacity"
-        >
-          Order Now
-        </Link>
+        {/* Desktop: lang toggle + CTA */}
+        <div className="hidden md:flex items-center gap-3">
+          <LangToggle />
+          <Link
+            href="/order"
+            className="gradient-bg text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:opacity-90 transition-opacity"
+          >
+            {tx.orderCta}
+          </Link>
+        </div>
 
         {/* Mobile hamburger */}
         <button
@@ -104,8 +135,11 @@ export default function Navbar() {
                   onClick={() => setMenuOpen(false)}
                   className="inline-block gradient-bg text-white text-sm font-semibold px-5 py-2.5 rounded-full"
                 >
-                  Order Now
+                  {tx.orderCta}
                 </Link>
+              </li>
+              <li className="pt-1">
+                <LangToggle compact />
               </li>
             </ul>
           </motion.div>
