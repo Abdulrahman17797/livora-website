@@ -6,13 +6,12 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 import { translations } from "@/lib/translations";
-import { ARABIC_ENABLED } from "@/lib/featureFlags";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const { lang, setLang } = useLanguage();
+  const { lang, setLang, arabicUnlocked } = useLanguage();
   const tx = translations[lang].nav;
 
   const links = [
@@ -83,7 +82,7 @@ export default function Navbar() {
 
         {/* Desktop: lang toggle (preview/dev only) + CTA */}
         <div className="hidden md:flex items-center gap-3">
-          {ARABIC_ENABLED && <LangToggle />}
+          {arabicUnlocked && <LangToggle />}
           <Link
             href="/order"
             className="gradient-bg text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:opacity-90 transition-opacity"
@@ -137,8 +136,8 @@ export default function Navbar() {
                   {tx.orderCta}
                 </Link>
               </li>
-              {/* Lang toggle only shown on preview/dev builds */}
-              {ARABIC_ENABLED && (
+              {/* Lang toggle: shown on preview/dev builds, or when ?lang=ar override is active */}
+              {arabicUnlocked && (
                 <li className="pt-1">
                   <LangToggle />
                 </li>
