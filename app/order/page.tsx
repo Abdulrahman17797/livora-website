@@ -119,7 +119,7 @@ export default function OrderPage() {
             {bottleCount(totalBottles, lang)} — BHD {totalPrice.toFixed(3)} —{" "}
             {lang === "en"
               ? "freshly brewed to order — please allow 5–7 days for preparation."
-              : "تُخمَّر طازجة عند الطلب — يُرجى السماح بـ 5–7 أيام للتحضير."}
+              : "تُحضَّر طازجة عند الطلب — يُرجى السماح بـ 5–7 أيام للتحضير."}
           </p>
           <button
             onClick={() => {
