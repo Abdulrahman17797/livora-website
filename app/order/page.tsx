@@ -13,9 +13,10 @@ const SIZES = [
 
 const DELIVERY_CHARGES = { muharraq: 2.0, rest: 1.0 } as const;
 const FREE_DELIVERY_THRESHOLD = 25.0;
+const TRAVEL_PACKING = 4.0;
 
 type SizeLabel = typeof SIZES[number]["label"];
-type AreaKey = keyof typeof DELIVERY_CHARGES;
+type AreaKey = keyof typeof DELIVERY_CHARGES | "gcc";
 type Selection = Record<string, number>;
 type SizeChoice = Record<string, SizeLabel>;
 
@@ -51,11 +52,18 @@ export default function OrderPage() {
     return sum + parseFloat(size.price) * qty;
   }, 0);
 
-  const deliveryCharge: number | null = area
-    ? (subtotal >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_CHARGES[area])
-    : null;
+  const isGcc = area === "gcc";
 
-  const grandTotal = subtotal + (deliveryCharge ?? 0);
+  const deliveryCharge: number | null = !area
+    ? null
+    : isGcc
+    ? 0
+    : subtotal >= FREE_DELIVERY_THRESHOLD
+    ? 0
+    : DELIVERY_CHARGES[area as keyof typeof DELIVERY_CHARGES];
+
+  const travelPackingCharge = isGcc ? TRAVEL_PACKING : 0;
+  const grandTotal = subtotal + (deliveryCharge ?? 0) + travelPackingCharge;
 
   const adjust = (id: string, delta: number) => {
     setSelection((prev) => {
@@ -89,7 +97,11 @@ export default function OrderPage() {
     lines.push("");
     lines.push(`${o.waSubtotal} BHD ${subtotal.toFixed(3)}`);
     lines.push(`${o.waArea} ${areaLabel}`);
-    lines.push(`${o.waDelivery} ${deliveryDisplay}`);
+    if (isGcc) {
+      lines.push(`${o.waTravel} BHD ${TRAVEL_PACKING.toFixed(3)}`);
+    } else {
+      lines.push(`${o.waDelivery} ${deliveryDisplay}`);
+    }
     lines.push(`${o.waTotal} BHD ${grandTotal.toFixed(3)}`);
     lines.push("");
     lines.push(`${o.waName} ${form.name}`);
@@ -291,7 +303,7 @@ export default function OrderPage() {
               <label className="block text-sm font-medium mb-2">
                 {o.deliveryAreaLabel}
               </label>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 {o.areaOptions.map((opt) => (
                   <button
                     key={opt.value}
@@ -307,9 +319,11 @@ export default function OrderPage() {
                   </button>
                 ))}
               </div>
-              <p className="mt-2 text-xs text-gray-400 font-light">
-                {o.freeDeliveryNote}
-              </p>
+              {isGcc ? (
+                <p className="mt-2 text-xs text-gray-500 font-light">{o.gccPickupNote}</p>
+              ) : (
+                <p className="mt-2 text-xs text-gray-400 font-light">{o.freeDeliveryNote}</p>
+              )}
             </div>
 
             <div className="grid sm:grid-cols-2 gap-4">
@@ -395,7 +409,7 @@ export default function OrderPage() {
                 <span className="text-gray-600">{o.subtotalLabel}</span>
                 <span className="font-medium">BHD {subtotal.toFixed(3)}</span>
               </div>
-              {deliveryCharge !== null && (
+              {!isGcc && deliveryCharge !== null && (
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">{o.deliveryLabel}</span>
                   <span
@@ -407,6 +421,12 @@ export default function OrderPage() {
                       ? o.deliveryFree
                       : `BHD ${deliveryCharge.toFixed(3)}`}
                   </span>
+                </div>
+              )}
+              {isGcc && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">{o.travelPackingLabel}</span>
+                  <span className="font-medium">BHD {TRAVEL_PACKING.toFixed(3)}</span>
                 </div>
               )}
               <div className="flex justify-between text-sm font-semibold pt-2 border-t border-[#E8A0BF]/20">

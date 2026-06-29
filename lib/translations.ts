@@ -82,6 +82,9 @@ interface SiteTranslation {
     waArea: string;
     waDelivery: string;
     waSubtotal: string;
+    gccPickupNote: string;
+    travelPackingLabel: string;
+    waTravel: string;
   };
   flavours: ReadonlyArray<{
     id: string;
@@ -202,6 +205,7 @@ const en: SiteTranslation = {
     areaOptions: [
       { value: "muharraq", label: "Muharraq" },
       { value: "rest", label: "Rest of Bahrain" },
+      { value: "gcc", label: "GCC travel pack (pickup in Bahrain)" },
     ],
     deliveryLabel: "Delivery",
     deliveryFree: "Free",
@@ -211,6 +215,9 @@ const en: SiteTranslation = {
     waArea: "*Area:*",
     waDelivery: "*Delivery:*",
     waSubtotal: "*Items:*",
+    gccPickupNote: "Pickup details will be sent via WhatsApp after ordering.",
+    travelPackingLabel: "Travel packing",
+    waTravel: "*Travel packing:*",
   },
   flavours: [
     {
@@ -349,6 +356,7 @@ const ar: SiteTranslation = {
     areaOptions: [
       { value: "muharraq", label: "المحرق" },
       { value: "rest", label: "باقي البحرين" },
+      { value: "gcc", label: "طلب لدول الخليج (الاستلام من البحرين)" },
     ],
     deliveryLabel: "التوصيل",
     deliveryFree: "مجاني",
@@ -358,6 +366,9 @@ const ar: SiteTranslation = {
     waArea: "*المنطقة:*",
     waDelivery: "*التوصيل:*",
     waSubtotal: "*المنتجات:*",
+    gccPickupNote: "سيتم إرسال تفاصيل الاستلام عبر واتساب بعد الطلب.",
+    travelPackingLabel: "التغليف للسفر",
+    waTravel: "*التغليف للسفر:*",
   },
   // Product names stay in English — only taglines/notes are translated
   flavours: [
