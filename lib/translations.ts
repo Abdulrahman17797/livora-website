@@ -72,6 +72,16 @@ interface SiteTranslation {
     waPhone: string;
     waAddress: string;
     waNotes: string;
+    deliveryAreaLabel: string;
+    areaOptions: ReadonlyArray<{ value: string; label: string }>;
+    deliveryLabel: string;
+    deliveryFree: string;
+    freeDeliveryNote: string;
+    subtotalLabel: string;
+    disabledAreaBtn: string;
+    waArea: string;
+    waDelivery: string;
+    waSubtotal: string;
   };
   flavours: ReadonlyArray<{
     id: string;
@@ -188,6 +198,19 @@ const en: SiteTranslation = {
     waPhone: "*Phone:*",
     waAddress: "*Address:*",
     waNotes: "*Notes:*",
+    deliveryAreaLabel: "Delivery Area",
+    areaOptions: [
+      { value: "muharraq", label: "Muharraq" },
+      { value: "rest", label: "Rest of Bahrain" },
+    ],
+    deliveryLabel: "Delivery",
+    deliveryFree: "Free",
+    freeDeliveryNote: "Free delivery on orders over BHD 25.000",
+    subtotalLabel: "Items",
+    disabledAreaBtn: "Select a delivery area to continue",
+    waArea: "*Area:*",
+    waDelivery: "*Delivery:*",
+    waSubtotal: "*Items:*",
   },
   flavours: [
     {
@@ -322,6 +345,19 @@ const ar: SiteTranslation = {
     waPhone: "*الهاتف:*",
     waAddress: "*العنوان:*",
     waNotes: "*ملاحظات:*",
+    deliveryAreaLabel: "منطقة التوصيل",
+    areaOptions: [
+      { value: "muharraq", label: "المحرق" },
+      { value: "rest", label: "باقي البحرين" },
+    ],
+    deliveryLabel: "التوصيل",
+    deliveryFree: "مجاني",
+    freeDeliveryNote: "توصيل مجاني للطلبات فوق 25.000 د.ب",
+    subtotalLabel: "المنتجات",
+    disabledAreaBtn: "اختر منطقة التوصيل للمتابعة",
+    waArea: "*المنطقة:*",
+    waDelivery: "*التوصيل:*",
+    waSubtotal: "*المنتجات:*",
   },
   // Product names stay in English — only taglines/notes are translated
   flavours: [

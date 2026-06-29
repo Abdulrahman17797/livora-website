@@ -97,6 +97,11 @@ export default function ProductsPage() {
         ))}
       </div>
 
+      {/* Free delivery note */}
+      <p className="mt-10 text-center text-sm text-gray-400 font-light">
+        🚚 {tx.order.freeDeliveryNote}
+      </p>
+
       {/* CTA */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}

@@ -11,7 +11,11 @@ const SIZES = [
   { label: "1 Litre", labelAr: "1 لتر", oldPrice: "7.000", price: "5.000" },
 ] as const;
 
+const DELIVERY_CHARGES = { muharraq: 2.0, rest: 1.0 } as const;
+const FREE_DELIVERY_THRESHOLD = 25.0;
+
 type SizeLabel = typeof SIZES[number]["label"];
+type AreaKey = keyof typeof DELIVERY_CHARGES;
 type Selection = Record<string, number>;
 type SizeChoice = Record<string, SizeLabel>;
 
@@ -36,15 +40,22 @@ export default function OrderPage() {
 
   const [selection, setSelection] = useState<Selection>({});
   const [sizeChoice, setSizeChoice] = useState<SizeChoice>(defaultSizeChoice);
+  const [area, setArea] = useState<AreaKey | "">("");
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({ name: "", phone: "", address: "", notes: "" });
 
   const totalBottles = Object.values(selection).reduce((a, b) => a + b, 0);
 
-  const totalPrice = Object.entries(selection).reduce((sum, [id, qty]) => {
+  const subtotal = Object.entries(selection).reduce((sum, [id, qty]) => {
     const size = SIZES.find((s) => s.label === (sizeChoice[id] ?? "500ml"))!;
     return sum + parseFloat(size.price) * qty;
   }, 0);
+
+  const deliveryCharge: number | null = area
+    ? (subtotal >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_CHARGES[area])
+    : null;
+
+  const grandTotal = subtotal + (deliveryCharge ?? 0);
 
   const adjust = (id: string, delta: number) => {
     setSelection((prev) => {
@@ -56,7 +67,13 @@ export default function OrderPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (totalBottles === 0) return;
+    if (totalBottles === 0 || !area) return;
+
+    const areaLabel = o.areaOptions.find((a) => a.value === area)?.label ?? area;
+    const deliveryDisplay =
+      deliveryCharge === 0
+        ? o.deliveryFree
+        : `BHD ${deliveryCharge!.toFixed(3)}`;
 
     const lines: string[] = [o.waHeader, ""];
 
@@ -64,13 +81,16 @@ export default function OrderPage() {
       const f = flavours.find((fl) => fl.id === id)!;
       const size = SIZES.find((s) => s.label === (sizeChoice[id] ?? "500ml"))!;
       const sizeDisplay = lang === "ar" ? size.labelAr : size.label;
-      lines.push(`• ${f.name} — ${sizeDisplay} — ${size.price} BHD × ${qty}`);
+      lines.push(
+        `• ${f.name} — ${sizeDisplay} — BHD ${size.price}${qty > 1 ? ` × ${qty}` : ""}`
+      );
     });
 
     lines.push("");
-    lines.push(
-      `${o.waTotal} ${bottleCount(totalBottles, lang)} — BHD ${totalPrice.toFixed(3)}`
-    );
+    lines.push(`${o.waSubtotal} BHD ${subtotal.toFixed(3)}`);
+    lines.push(`${o.waArea} ${areaLabel}`);
+    lines.push(`${o.waDelivery} ${deliveryDisplay}`);
+    lines.push(`${o.waTotal} BHD ${grandTotal.toFixed(3)}`);
     lines.push("");
     lines.push(`${o.waName} ${form.name}`);
     lines.push(`${o.waPhone} ${form.phone}`);
@@ -116,7 +136,7 @@ export default function OrderPage() {
             )}
           </p>
           <p className="mt-3 text-sm text-gray-400">
-            {bottleCount(totalBottles, lang)} — BHD {totalPrice.toFixed(3)} —{" "}
+            {bottleCount(totalBottles, lang)} — BHD {grandTotal.toFixed(3)} —{" "}
             {lang === "en"
               ? "freshly brewed to order — please allow 5–7 days for preparation."
               : "تُحضَّر طازجة عند الطلب — يُرجى السماح بـ 5–7 أيام للتحضير."}
@@ -127,6 +147,7 @@ export default function OrderPage() {
               setSelection({});
               setSizeChoice(defaultSizeChoice);
               setForm({ name: "", phone: "", address: "", notes: "" });
+              setArea("");
             }}
             className="mt-8 gradient-bg text-white font-semibold px-8 py-4 rounded-full hover:opacity-90 transition-opacity"
           >
@@ -202,7 +223,6 @@ export default function OrderPage() {
                     </div>
                     <div>
                       <span className="font-medium text-sm block">{name}</span>
-                      {/* Size toggle */}
                       <div className="flex gap-1.5 mt-1.5">
                         {SIZES.map((s) => {
                           const displayLabel = lang === "ar" ? s.labelAr : s.label;
@@ -220,7 +240,11 @@ export default function OrderPage() {
                               }`}
                             >
                               {displayLabel}{" "}
-                              <span className={`line-through ${selectedSize === s.label ? "opacity-60" : "opacity-50"}`}>
+                              <span
+                                className={`line-through ${
+                                  selectedSize === s.label ? "opacity-60" : "opacity-50"
+                                }`}
+                              >
                                 {s.oldPrice}
                               </span>{" "}
                               {s.price} BHD
@@ -262,6 +286,32 @@ export default function OrderPage() {
         >
           <h2 className="text-xl font-bold mb-6">{o.yourDetails}</h2>
           <div className="space-y-4">
+            {/* Delivery area */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                {o.deliveryAreaLabel}
+              </label>
+              <div className="flex gap-2">
+                {o.areaOptions.map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setArea(opt.value as AreaKey)}
+                    className={`flex-1 text-sm py-3 rounded-xl font-medium border transition-all ${
+                      area === opt.value
+                        ? "gradient-bg text-white border-transparent"
+                        : "border-gray-200 text-gray-600 hover:border-[#E8A0BF]"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+              <p className="mt-2 text-xs text-gray-400 font-light">
+                {o.freeDeliveryNote}
+              </p>
+            </div>
+
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-2">{o.fullName}</label>
@@ -335,16 +385,34 @@ export default function OrderPage() {
                       {f.name}{" "}
                       <span className="text-gray-400">({displayLabel})</span>
                     </span>
-                    <span className="font-medium">
-                      × {qty} — BHD {lineTotal}
-                    </span>
+                    <span className="font-medium">× {qty} — BHD {lineTotal}</span>
                   </li>
                 );
               })}
             </ul>
-            <div className="border-t border-[#E8A0BF]/30 mt-4 pt-4 flex justify-between text-sm font-semibold">
-              <span>{o.total}</span>
-              <span className="gradient-text">BHD {totalPrice.toFixed(3)}</span>
+            <div className="border-t border-[#E8A0BF]/30 mt-4 pt-4 space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600">{o.subtotalLabel}</span>
+                <span className="font-medium">BHD {subtotal.toFixed(3)}</span>
+              </div>
+              {deliveryCharge !== null && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">{o.deliveryLabel}</span>
+                  <span
+                    className={`font-medium ${
+                      deliveryCharge === 0 ? "text-green-600" : ""
+                    }`}
+                  >
+                    {deliveryCharge === 0
+                      ? o.deliveryFree
+                      : `BHD ${deliveryCharge.toFixed(3)}`}
+                  </span>
+                </div>
+              )}
+              <div className="flex justify-between text-sm font-semibold pt-2 border-t border-[#E8A0BF]/20">
+                <span>{o.total}</span>
+                <span className="gradient-text">BHD {grandTotal.toFixed(3)}</span>
+              </div>
             </div>
             <p className="mt-3 text-xs text-gray-400 font-light">{o.brewNote}</p>
           </motion.div>
@@ -352,12 +420,14 @@ export default function OrderPage() {
 
         <button
           type="submit"
-          disabled={totalBottles === 0}
+          disabled={totalBottles === 0 || !area}
           className="w-full gradient-bg text-white font-semibold py-4 rounded-full hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {totalBottles === 0
             ? o.disabledBtn
-            : `${o.submitBtnPrefix} ${totalPrice.toFixed(3)}`}
+            : !area
+            ? o.disabledAreaBtn
+            : `${o.submitBtnPrefix} ${grandTotal.toFixed(3)}`}
         </button>
       </form>
     </div>
