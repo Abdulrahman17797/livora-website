@@ -170,7 +170,7 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="mt-12 grid grid-cols-3 gap-8 max-w-lg mx-auto"
+            className="mt-12 grid grid-cols-2 gap-8 max-w-sm mx-auto"
           >
             {h.stats.map(({ stat, label }) => (
               <div key={label} className="text-center">

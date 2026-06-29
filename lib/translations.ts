@@ -113,7 +113,6 @@ const en: SiteTranslation = {
     stats: [
       { stat: "5–7", label: "Days brewed to order" },
       { stat: "100%", label: "Organic tea" },
-      { stat: "0g", label: "Artificial sugar" },
     ],
     ctaH2: ["Ready to", "feel the difference?"],
     ctaSub: "Order your kombucha and we'll brew it fresh for you.",
@@ -248,7 +247,6 @@ const ar: SiteTranslation = {
     stats: [
       { stat: "5–7", label: "أيام تحضير عند الطلب" },
       { stat: "100%", label: "شاي عضوي" },
-      { stat: "0g", label: "سكر اصطناعي" },
     ],
     ctaH2: ["هل أنت مستعد", "لتشعر بالفرق؟"],
     ctaSub: "اطلب كومبوتشاك وسنُحضّره طازجاً لك.",
