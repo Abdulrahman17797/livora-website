@@ -10,4 +10,4 @@
 //   • Local dev                      → ARABIC_ENABLED = true   (toggle visible)
 //
 // ─────────────────────────────────────────────────────────────────────────────
-export const ARABIC_ENABLED = process.env.NEXT_PUBLIC_VERCEL_ENV !== "production";
+export const ARABIC_ENABLED = true;
